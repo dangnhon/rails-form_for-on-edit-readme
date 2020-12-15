@@ -13,8 +13,8 @@ class PostsController < ApplicationController
 
 	def create
 	  @post = Post.new
-	  @post.title = params[:title]
-	  @post.description = params[:description]
+	  @post.title = params[:post][:title]
+	  @post.description = params[:post][:description]
 	  @post.save
 	  redirect_to post_path(@post)
 	end
@@ -25,7 +25,11 @@ class PostsController < ApplicationController
 
 	def update
 	  @post = Post.find(params[:id])
-	  @post.update(title: params[:title], description: params[:description])
+	  # The method below will return an error as 'unpermitted' even though it's what we normally use:
+	  # @post.update(title: params[:title], description: params[:description])
+
+	  # Instead we need to use the strong params require within the update method such as below: 
+	  @post.update(params.require(:post).permit(:title, :description)) 
 	  redirect_to post_path(@post)
 	end
 end
